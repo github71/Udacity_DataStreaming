@@ -38,7 +38,7 @@ def configure_connector():
                "table.whitelist": "stations",
                "mode": "incrementing",
                "incrementing.column.name": "stop_id",
-               "topic.prefix": "postgres_conn_",
+               "topic.prefix": "jdbc.",
                "poll.interval.ms": "10000",
                "batch.max.rows": "100",
            }
