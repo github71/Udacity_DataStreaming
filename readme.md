@@ -56,8 +56,8 @@ curl http://localhost:[PORT] > index.html where [PORT] is defined by WEB_SERVER_
 
 ## Kafka command line
 #### view stations coming through the Kafka connect topic:
-kafka-console-consumer --bootstrap-server "kafka://localhost:9092" --topic "jdbc.stations" --from-beginning
+kafka-console-consumer --bootstrap-server "kafka://localhost:9092" --topic "org.chicago.cta.jdbc.stations" --from-beginning
 #### view stations coming through the Faust topic:
-kafka-console-consumer --bootstrap-server "kafka://localhost:9092" --topic "output.faust.stations" --from-beginning
+kafka-console-consumer --bootstrap-server "kafka://localhost:9092" --topic "org.chicago.cta.stations" --from-beginning
 #### view stations coming through the Turnstile topic:
 kafka-console-consumer --bootstrap-server "kafka://localhost:9092" --topic "TURNSTILE_SUMMARY" --from-beginning
