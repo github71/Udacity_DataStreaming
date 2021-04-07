@@ -30,13 +30,12 @@ class Weather(Producer):
     summer_months = set((6, 7, 8))
 
     def __init__(self, month):
-
         super().__init__(
-            topic_name=f"org.chicago.cta.weather",
+            "org.chicago.cta.weather",
             key_schema=Weather.key_schema,
             value_schema=Weather.value_schema,
             num_partitions=1,
-            num_replicas=1,            
+            num_replicas=1,
         )
 
         self.status = Weather.status.sunny
@@ -66,34 +65,32 @@ class Weather(Producer):
 
     def run(self, month):
         self._set_weather(month)
-
         resp = requests.post(
-           f"{Weather.rest_proxy_url}/topics/{self.topic_name}",
+           f"{Weather.rest_proxy_url}/topics/org.chicago.cta.weather",
            headers={"Content-Type": "application/vnd.kafka.avro.v2+json"},
            data=json.dumps(
-                {
+               {
                    "key_schema": json.dumps(Weather.key_schema),
                    "value_schema": json.dumps(Weather.value_schema),
                    "records": [
-                        {
-                           "key": {"timestamp": self.time_millis()},
-                           "value": {
+                       {
+                            "key": {
+                                "timestamp": self.time_millis()
+                            },
+                            "value":
+                            {
                                 "temperature": self.temp,
-                                "status": self.status.name,
+                                "status": self.status.name
                             }
                         }
                     ]
-                }
-            ),
+               }
+           ),
         )
-
         try:
             resp.raise_for_status()
         except Exception as e:
-            logger.exception(
-                f"Failed to subscribe REST proxy consumer: {json.dumps(resp.json(), indent=2)}"
-            )
-            return
+            logger.error(f"Failed to send data to REST Proxy {json.dumps(resp.json(), indent=2)}")
 
         logger.debug(
             "sent weather data to kafka, temp: %s, status: %s",
