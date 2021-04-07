@@ -4,7 +4,9 @@ import logging
 
 import requests
 
+
 logger = logging.getLogger(__name__)
+
 
 KAFKA_CONNECT_URL = "http://localhost:8083/connectors"
 CONNECTOR_NAME = "stations"
@@ -20,37 +22,36 @@ def configure_connector():
         return
 
     resp = requests.post(
-        KAFKA_CONNECT_URL,
-        headers={"Content-Type": "application/json"},
-        data=json.dumps({
-            "name": CONNECTOR_NAME,
-            "config": {
-                "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
-                "key.converter": "org.apache.kafka.connect.json.JsonConverter",
-                "key.converter.schemas.enable": "false",
-                "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-                "value.converter.schemas.enable": "false",
-                "batch.max.rows": "500",
-                "connection.url": "jdbc:postgresql://localhost:5432/cta",
-                "connection.user": "cta_admin",
-                "connection.password": "chicago",
-                "table.whitelist": "stations",
-                "mode": "incrementing",
-                "incrementing.column.name": "stop_id",
-                "topic.prefix": "jdbc.",
-                "poll.interval.ms": "10000",
-            }
-        }),
+       KAFKA_CONNECT_URL,
+       headers={"Content-Type": "application/json"},
+       data=json.dumps({
+           "name": CONNECTOR_NAME,
+           "config": {
+               "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+               "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+               "key.converter.schemas.enable": "false",
+               "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+               "value.converter.schemas.enable": "false",
+               "batch.max.rows": "500",
+               "connection.url": "jdbc:postgresql://localhost:5432/cta",
+               "connection.user": "cta_admin",
+               "connection.password": "chicago",
+               "table.whitelist": "stations",
+               "mode": "incrementing",
+               "incrementing.column.name": "stop_id",
+               "topic.prefix": "org.chicago.cta.jdbc.",
+               "poll.interval.ms": "60000"  # one minute polling
+           }
+       }),
     )
 
     # Ensure a healthy response was given
     try:
         resp.raise_for_status()
     except Exception as e:
-        logging.info(f"failed creating connector: {json.dumps(resp.json(), indent=2)}")
-        exit(1)
+        logging.error(f"Failed to send data to REST Proxy {json.dumps(resp.json(), indent=2)}")
 
-    logging.info("connector created successfully")
+    logging.debug("connector created successfully")
 
 
 if __name__ == "__main__":
