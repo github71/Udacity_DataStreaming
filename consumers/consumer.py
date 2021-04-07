@@ -23,7 +23,7 @@ class KafkaConsumer:
         sleep_secs=1.0,
         consume_timeout=0.1,
     ):
-        logger.info(f"intialising kafka consumet topic name handler : %s", topic_name_pattern)
+        logger.info(f"initialising kafka consumer topic name handler : %s", topic_name_pattern)
         """Creates a consumer object for asynchronous use"""
         self.topic_name_pattern = topic_name_pattern
         self.message_handler = message_handler
@@ -32,7 +32,7 @@ class KafkaConsumer:
         self.offset_earliest = offset_earliest
 
         self.broker_properties = {
-            "bootstrap.servers" : "PLAINTEXT://localhost:9092,PLAINTEXT://localhost:9093,PLAINTEXT://localhost:9094", 
+            "bootstrap.servers": "PLAINTEXT://localhost:9092,PLAINTEXT://localhost:9093,PLAINTEXT://localhost:9094",
             "group.id": f"{self.topic_name_pattern}",
             "auto.offset.reset": "earliest"
         }
@@ -78,12 +78,12 @@ class KafkaConsumer:
                     return 0
                 else:
                     logger.info(f"consumed message")
-                    logger.info("key: %s",message.key())
-                    logger.info("value: %s",message.value())                    
+                    logger.info("key: %s", message.key())
+                    logger.info("value: %s", message.value())
                     self.message_handler(message)
                     return 1
         except Exception as e:
-            logger.info(f"an excpetion occured : %s ", e)
+            logger.info(f"an exception occurred : %s ", e)
 
     def close(self):
         """Cleans up any open kafka consumers"""
