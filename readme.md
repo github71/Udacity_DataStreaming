@@ -52,4 +52,12 @@ Once the server is running, you may hit `Ctrl+C` at any time to exit.
 ## Viewing the output
  When running through the terminal it will not be possible to view the webpage , the following command will provide access to the data:
  
-curl http://localhost:[PORT] > index.html where [PORT] is defined by WEB_SERVER_PORT in the consumers/server.py file 
+curl http://localhost:[PORT] > index.html where [PORT] is defined by WEB_SERVER_PORT in the consumers/server.py file
+
+## Kafka command line
+#### view stations coming through the Kafka connect topic:
+kafka-console-consumer --bootstrap-server "kafka://localhost:9092" --topic "jdbc.stations" --from-beginning
+#### view stations coming through the Faust topic:
+kafka-console-consumer --bootstrap-server "kafka://localhost:9092" --topic "output.faust.stations" --from-beginning
+#### view stations coming through the Turnstile topic:
+kafka-console-consumer --bootstrap-server "kafka://localhost:9092" --topic "TURNSTILE_SUMMARY" --from-beginning
