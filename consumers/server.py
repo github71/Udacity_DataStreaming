@@ -20,6 +20,7 @@ import topic_check
 logger = logging.getLogger(__name__)
 WEB_SERVER_PORT = 8892
 
+
 class MainHandler(tornado.web.RequestHandler):
     """Defines a web request handler class"""
 
@@ -58,7 +59,6 @@ def run_server():
     else:
         logger.info(f"stations.table exists")
 
-    
     weather_model = Weather()
     lines = Lines()
 
