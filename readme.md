@@ -2,13 +2,9 @@
 
 ## Running and Testing
 
-To run the simulation, you must first start up the Kafka ecosystem on their machine utilizing Docker Compose.
+To run the simulation, you must first start up the Kafka ecosystem in the udacity terminal, there is an option to use the docker but we will not follow it on this occasion.
 
-```%> docker-compose up```
-
-Docker compose will take a 3-5 minutes to start, depending on your hardware. Please be patient and wait for the docker-compose logs to slow down or stop before beginning the simulation.
-
-Once docker-compose is ready, the following services will be available:
+The following services will be available:
 
 | Service | Host URL | Username | Password |
 | --- | --- | --- | --- |
@@ -22,10 +18,6 @@ Once docker-compose is ready, the following services will be available:
 | Kafka Connect | [http://localhost:8083](http://localhost:8083) 
 | KSQL | [http://localhost:8088](http://localhost:8088) 
 | PostgreSQL | `jdbc:postgresql://localhost:5432/cta` |  `cta_admin` | `chicago` |
-
-Note that to access these services from your own machine, you will always use the `Host URL` column.
-
-When configuring services that run within Docker Compose, like **Kafka Connect you must use the Docker URL**. When you configure the JDBC Source Kafka Connector, for example, you will want to use the value from the `Docker URL` column.
 
 ### Running the Simulation
 
