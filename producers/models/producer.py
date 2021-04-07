@@ -8,6 +8,9 @@ from confluent_kafka.avro import AvroProducer, CachedSchemaRegistryClient
 
 logger = logging.getLogger(__name__)
 
+SCHEMA_REGISTRY_URL = "http://localhost:8081"
+BROKER_URL = "PLAINTEXT://localhost:9092"
+
 
 class Producer:
     """Defines and provides common functionality amongst Producers"""
@@ -30,11 +33,9 @@ class Producer:
         self.num_partitions = num_partitions
         self.num_replicas = num_replicas
 
-        logger.info(f"initialising topic %s ", topic_name)
-
         self.broker_properties = {
-            "bootstrap.servers": "PLAINTEXT://localhost:9092",
-            "schema.registry.url": "http://localhost:8081",
+            "bootstrap.servers": BROKER_URL,
+            "schema.registry.url": SCHEMA_REGISTRY_URL
         }
 
         # If the topic does not already exist, try to create it
@@ -42,41 +43,31 @@ class Producer:
             self.create_topic()
             Producer.existing_topics.add(self.topic_name)
 
-        # Configure the AvroProducer
-        self.producer = AvroProducer(
-            self.broker_properties,
-            default_key_schema=self.key_schema,
-            default_value_schema=self.value_schema,
-        )
+        self.producer = AvroProducer(self.broker_properties,
+                                     default_key_schema=self.key_schema,
+                                     default_value_schema=self.value_schema)
 
     def create_topic(self):
         """Creates the producer topic if it does not already exist"""
-        client = AdminClient(
-            {"bootstrap.servers": self.broker_properties["bootstrap.servers"]}
-        )
 
+        client = AdminClient({"bootstrap.servers": BROKER_URL})
         topic_metadata = client.list_topics(timeout=5)
 
         if self.topic_name in set(
                 t.topic for t in iter(topic_metadata.topics.values())
         ):
-            logger.info("not recreating existing topic %s", self.topic_name)
+            logger.debug("not recreating existing topic %s", self.topic_name)
             return
 
-        logger.info(f"creating new topic %s ", self.topic_name)
-
-        topic = NewTopic(self.topic_name,
-                         num_partitions=self.num_partitions,
-                         replication_factor=self.num_replicas,
-                         )
-
-        client.create_topics([topic])
+        client.create_topics([NewTopic(self.topic_name,
+                                       num_partitions=self.num_partitions,
+                                       replication_factor=self.num_replicas)
+                              ])
 
     def close(self):
         """Prepares the producer for exit by cleaning up the producer"""
-        if self.producer is not None:
-            logger.info("closing producer...")
-            self.producer.flush()
+
+        self.producer.flush()
 
     @staticmethod
     def time_millis():
