@@ -18,7 +18,7 @@ import topic_check
 
 
 logger = logging.getLogger(__name__)
-WEB_SERVER_PORT = 8892
+WEB_SERVER_PORT = 8889
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -31,11 +31,10 @@ class MainHandler(tornado.web.RequestHandler):
         """Initializes the handler with required configuration"""
         self.weather = weather
         self.lines = lines
-        debug.info(f'in MainHandler initialise')
 
     def get(self):
         """Responds to get requests"""
-        logging.info("rendering and writing handler template")
+        logging.debug("rendering and writing handler template")
         self.write(
             MainHandler.template.generate(weather=self.weather, lines=self.lines)
         )
@@ -48,16 +47,12 @@ def run_server():
             "Ensure that the KSQL Command has run successfully before running the web server!"
         )
         exit(1)
-    else:
-        logger.info(f"TURNSTILE_SUMMARY exists")
 
-    if topic_check.topic_exists("org.chicago.cta.stations.table") is False:
+    if topic_check.topic_pattern_match("org.chicago.cta.stations") is False:
         logger.fatal(
             "Ensure that Faust Streaming is running successfully before running the web server!"
         )
         exit(1)
-    else:
-        logger.info(f"stations.table exists")
 
     weather_model = Weather()
     lines = Lines()
@@ -73,15 +68,16 @@ def run_server():
             "org.chicago.cta.weather",
             weather_model.process_message,
             offset_earliest=True,
+            is_avro=True
         ),
         KafkaConsumer(
-            "output.faust.stations",
+            "org.chicago.cta.stations",
             lines.process_message,
             offset_earliest=True,
             is_avro=False,
         ),
         KafkaConsumer(
-            "^org.chicago.cta.station.arrivals.",
+            "^org.chicago.cta.station.",
             lines.process_message,
             offset_earliest=True,
         ),
