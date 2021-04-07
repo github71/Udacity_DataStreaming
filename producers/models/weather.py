@@ -32,7 +32,7 @@ class Weather(Producer):
     def __init__(self, month):
 
         super().__init__(
-            topic_name = f"org.chicago.cta.weather",
+            topic_name=f"org.chicago.cta.weather",
             key_schema=Weather.key_schema,
             value_schema=Weather.value_schema,
             num_partitions=1,
@@ -69,8 +69,8 @@ class Weather(Producer):
 
         resp = requests.post(
            f"{Weather.rest_proxy_url}/topics/{self.topic_name}",
-           headers = {"Content-Type": "application/vnd.kafka.avro.v2+json"},
-           data = json.dumps(
+           headers={"Content-Type": "application/vnd.kafka.avro.v2+json"},
+           data=json.dumps(
                 {
                    "key_schema": json.dumps(Weather.key_schema),
                    "value_schema": json.dumps(Weather.value_schema),
@@ -89,7 +89,7 @@ class Weather(Producer):
 
         try:
             resp.raise_for_status()
-        except:
+        except Exception as e:
             logger.exception(
                 f"Failed to subscribe REST proxy consumer: {json.dumps(resp.json(), indent=2)}"
             )
