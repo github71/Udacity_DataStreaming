@@ -51,7 +51,6 @@ class TurnstileHardware:
         ratio = hour_curve.iloc[0]["ridership_ratio"]
         total_steps = int(60 / (60 / time_step.total_seconds()))
 
-        num_riders = 0
         dow = timestamp.weekday()
         if dow >= 0 or dow < 5:
             num_riders = self.weekday_ridership
