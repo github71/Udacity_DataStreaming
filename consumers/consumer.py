@@ -24,7 +24,7 @@ class KafkaConsumer:
         is_avro=True,
         offset_earliest=False,
         sleep_secs=1.0,
-        consume_timeout=0.1,
+        consume_timeout=10,
     ):
         """Creates a consumer object for asynchronous use"""
         self.topic_name_pattern = topic_name_pattern
