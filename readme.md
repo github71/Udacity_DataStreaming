@@ -61,3 +61,17 @@ kafka-console-consumer --bootstrap-server "kafka://localhost:9092" --topic "org.
 kafka-console-consumer --bootstrap-server "kafka://localhost:9092" --topic "org.chicago.cta.stations" --from-beginning
 #### view stations coming through the Turnstile topic:
 kafka-console-consumer --bootstrap-server "kafka://localhost:9092" --topic "TURNSTILE_SUMMARY" --from-beginning
+#### view all topics
+kafka-topis --list --zookeepr localhost:2181
+#### view all turnstile messages
+kafka-avro-console-consumer --topic org.chicago.cta.turnstile --bootstrap-server localhost:9092 --max-messages 100
+#### view all weather messages
+kafka-avro-console-consumer --topic org.chicago.cta.weather --from-beginning --bootstrap-server localhost:9092 --max-messages 100
+#### view all stations info in postgres
+kafka-console-consumer --topic org.chicago.cta.jdbc.stations --from-beginning --bootstrap-server localhost:9092 --max-messages 250
+
+## Faust checks
+#### tables
+python faust_stream.py tables
+#### transformed tables
+kafka-console-consumer --topic org.chicago.cta.stations --from-beginning --bootstrap-server localhost:9092 --max-messages 250
