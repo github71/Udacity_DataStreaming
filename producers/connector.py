@@ -51,7 +51,7 @@ def configure_connector():
     except Exception as e:
         logging.error(f"Failed to send data to REST Proxy {json.dumps(resp.json(), indent=2)}")
 
-    logging.debug("connector created successfully")
+    logging.debug("%s created successfully", CONNECTOR_NAME)
 
 
 if __name__ == "__main__":
