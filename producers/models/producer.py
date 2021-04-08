@@ -63,6 +63,7 @@ class Producer:
                                        num_partitions=self.num_partitions,
                                        replication_factor=self.num_replicas)
                               ])
+        logger.debug("created new topic %s", self.topic_name)
 
     def close(self):
         """Prepares the producer for exit by cleaning up the producer"""
